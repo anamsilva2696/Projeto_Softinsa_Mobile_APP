@@ -27,8 +27,10 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_marginTop="16dp"
+                android:scaleType="centerInside"
                 android:contentDescription="@string/menu"
                 android:src="@drawable/baseline_menu_24"
+                android:background="@android:color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,17 +43,21 @@
                 app:cardElevation="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:contentDescription="Profile Picture"
-                    android:src="@drawable/ric" />
-
-            </androidx.cardview.widget.CardView>
-
+                app:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:id="@+id/user_perf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="205dp"
+                android:layout_marginBottom="50dp"
+                android:text="Utilizador:"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.317" />
             <TextView
                 android:id="@+id/perfil_Nome_Utilizador"
                 android:layout_width="wrap_content"

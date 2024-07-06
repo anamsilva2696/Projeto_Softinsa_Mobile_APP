@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background"
-    tools:context=".SignupActivity"
-    >
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/signin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="190dp"
         android:layout_marginBottom="25dp"
         android:gravity="center"
@@ -54,6 +54,16 @@
         android:drawableStart="@drawable/baseline_password_24"
         android:drawablePadding="15dp"/>
 
+    <ImageView
+        android:id="@+id/showpass_signin"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignTop="@id/password"
+        android:layout_alignEnd="@id/password"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/baseline_see_pass" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,12 +105,24 @@
         android:backgroundTint="@color/design_default_color_secondary"
         android:text="Entrar" />
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/loginGoogleBtn"
+        android:layout_below="@id/loginbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        app:buttonSize="standard"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/noAccount"
         android:gravity="center"
-        android:layout_below="@id/loginbtn">
+        android:layout_below="@id/loginGoogleBtn">
 
         <TextView
             android:id="@+id/noAccountYet"
@@ -116,7 +138,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Registe-se aqui"
+            android:text="Registe-se aqui!"
             android:gravity="start"
             android:background="@null"
 
@@ -124,38 +146,5 @@
             android:clickable="true"/>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/others"
-        android:layout_above="@id/socialicons"
-        android:text="Entre com"
-        android:layout_centerHorizontal="true"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/socialicons"
-        android:gravity="center"
-        android:layout_alignParentBottom="true">
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="20dp"
-            android:id="@+id/googlebtn"
-            android:scaleType="fitCenter"
-            android:background="@null"
-            android:src="@drawable/google"/>
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="20dp"
-            android:scaleType="fitCenter"
-            android:background="@null"
-            android:src="@drawable/facebook"/>
-    </LinearLayout>
 
 </RelativeLayout>
