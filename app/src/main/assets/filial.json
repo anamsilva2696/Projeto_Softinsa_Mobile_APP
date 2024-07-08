@@ -1,0 +1,32 @@
+{
+  "filiais": [
+    {
+      "filialId": 1,
+      "filialNome":"Golden",
+      "morada":"Rua do Ouro, 123",
+      "telemovel":"912345678",
+      "email":"golden@gmail.com",
+      "dataRegisto":"2021-09-10",
+      "dataAtualizacao":"2024-09-11"
+    },
+    {
+      "filialId": 2,
+      "filialNome":"Silver",
+      "morada":"Rua da Prata, 456",
+      "telemovel":"912345679",
+      "email":"silver@gmail.com",
+      "dataRegisto":"2021-09-11",
+      "dataAtualizacao":"2024-09-12"
+
+    },
+    {
+      "filialId": 3,
+      "filialNome":"Bronze",
+      "morada":"Rua do Bronze, 789",
+      "telemovel":"912345670",
+      "email":"bronze@gmail.com",
+      "dataRegisto":"2021-09-12",
+      "dataAtualizacao":"2024-09-13"
+    }
+  ]
+}

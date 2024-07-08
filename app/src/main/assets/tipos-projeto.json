@@ -1,0 +1,20 @@
+{
+"tipos-projeto": [
+    {
+      "tipoProjetoId": 1,
+      "tipoProjetoNome": "Projeto de Pesquisa"
+    
+    },
+    {
+      "tipoProjetoId": 2,
+      "tipoProjetoNome": "Projeto de Extensão"
+    
+    },
+    {
+      "tipoProjetoId": 3,
+      "tipoProjetoNome": "Projeto de Ensino"
+      
+    }
+   
+  ]
+}

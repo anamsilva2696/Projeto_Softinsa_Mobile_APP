@@ -2,6 +2,7 @@ package com.example.projeto_softinsa_app.API
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -9,8 +10,13 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Des_tudo.imagem_lista_user
 import com.example.projeto_softinsa_app.Des_tudo.imagem_projeto
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
+import com.google.gson.Gson
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
 
 class Perfil(private val context: Context, private val editor: SharedPreferences.Editor?) {
 
@@ -85,12 +91,13 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
     }
 
     fun listUser(callback: GetUserListaCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/user/list"
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "users.json")
+        val obj = JSONObject(jsonString)
 
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+       // val url = "https://softinsa-web-app-carreiras01.onrender.com/user/list"
+
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = obj.getJSONArray("users")
                     val ar_img_list_users= ArrayList<imagem_lista_user>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -133,22 +140,60 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
                     callback.onSuccess(ar_img_list_users)
                 } catch (e: JSONException) {
                     val errorMessage = "User - Erro ao analisar a resposta do servidor: ${e.message}"
+                    println(errorMessage)
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
-
-
+            }
 
     fun getUser(id: Int, callback: GetUserCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/user/get/$id"
+        val jsonString = ReadJSONFromAssets(context, "users.json")
+        val obj = JSONObject(jsonString)
+
+        if (obj.has("users")) {
+            val jsonArray = obj.getJSONArray("users")
+
+            for (i in 0 until jsonArray.length()) {
+                val item = jsonArray.getJSONObject(i)
+                if (item.optInt("userId") == id) {
+                    // Extrair os campos desejados do objeto "data"
+                    val user = User(
+                        userId = item.optInt("userId"),
+                        primeiroNome = item.optString("primeiroNome"),
+                        ultimoNome = item.optString("ultimoNome"),
+                        numeroFuncionario = item.optString("numeroFuncionario"),
+                        email = item.optString("email"),
+                        password = item.optString("password"),
+                        telemovel = item.optString("telemovel"),
+                        morada = item.optString("morada"),
+                        salario = item.optString("salario"),
+                        dataRegisto = item.optString("dataRegisto"),
+                        ultimoLogin = item.optString("ultimoLogin"),
+                        dataContratacao = item.optString("dataContratacao"),
+                        isPrimeiroLogin = item.optBoolean("isPrimeiroLogin"),
+                        isAtivo = item.optBoolean("isAtivo"),
+                        isColaborador = item.optBoolean("isColaborador"),
+                        isCandidato = item.optBoolean("isCandidato"),
+                        verificationToken = item.optString("verificationToken"),
+                        recoverToken = item.optString("recoverToken"),
+                        cargoId = item.optInt("cargoId"),
+                        departamentoId = item.optString("departamentoId"),
+                        filialId = item.optString("filialId"),
+                        cargo = Cargo(
+                            cargoId = item.optJSONObject("cargo").optInt("cargoId"),
+                            cargoNome = item.optJSONObject("cargo").optString("cargoNome")
+                        )
+                    )
+                    callback.onSuccess(user)
+                }
+            }
+
+        } else {
+            // Lidar com a resposta JSON inválida ou ausência do campo "data"
+            val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
+            callback.onFailure(errorMessage)
+        }
+        /*url = "https://softinsa-web-app-carreiras01.onrender.com/user/get/$id"
 
         val request = JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
@@ -198,7 +243,7 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
                 callback.onFailure(errorMessage)
             })
 
-        requestQueue.add(request)
+        requestQueue.add(request)*/
     }
 
     fun updateUser(user: User, callback: GetUserCallback) {
@@ -371,4 +416,38 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
         fun onFailure(errorMessage: String)
     }
 
+    fun ReadJSONFromAssets(context: Context, path: String): String {
+        val identifier = "[ReadJSON]"
+        try {
+            val file = context.assets.open("$path")
+            Log.i(
+                identifier,
+                "Found File: $file.",
+            )
+            val bufferedReader = BufferedReader(InputStreamReader(file))
+            val stringBuilder = StringBuilder()
+            bufferedReader.useLines { lines ->
+                lines.forEach {
+                    stringBuilder.append(it)
+                }
+            }
+            Log.i(
+                identifier,
+                "getJSON stringBuilder: $stringBuilder.",
+            )
+            val jsonString = stringBuilder.toString()
+            Log.i(
+                identifier,
+                "JSON as String: $jsonString.",
+            )
+            return jsonString
+        } catch (e: Exception) {
+            Log.e(
+                identifier,
+                "Error reading JSON: $e.",
+            )
+            e.printStackTrace()
+            return ""
+        }
+    }
 }

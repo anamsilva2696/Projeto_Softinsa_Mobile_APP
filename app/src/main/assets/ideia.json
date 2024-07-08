@@ -1,0 +1,33 @@
+{
+  "ideias": [
+    {
+      "ideiaId": 1,
+      "titulo":"Ideia 1",
+      "descricao":"Descrição da Ideia 1",
+      "tipo":"Tipo 1",
+      "dataCriacao":"2021-09-11",
+      "dataAtualizacao":"2024-09-12",
+      "userId":1
+    },
+    {
+      "ideiaId": 2,
+      "titulo":"Ideia 2",
+      "descricao":"Descrição da Ideia 2",
+      "tipo":"Tipo 2",
+      "dataCriacao":"2021-09-12",
+      "dataAtualizacao":"2024-09-13",
+      "userId":2
+    },
+    {
+      "ideiaId": 3,
+      "titulo":"Ideia 3",
+      "descricao":"Descrição da Ideia 3",
+      "tipo":"Tipo 3",
+      "dataCriacao":"2021-09-13",
+      "dataAtualizacao":"2024-09-14",
+      "userId":3
+
+    }
+    
+  ]
+}

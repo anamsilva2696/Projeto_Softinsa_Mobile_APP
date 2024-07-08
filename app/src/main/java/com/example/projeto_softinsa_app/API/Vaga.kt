@@ -1,6 +1,7 @@
 package com.example.projeto_softinsa_app.API
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -8,6 +9,8 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONException
 import com.example.projeto_softinsa_app.Des_tudo.imagem_vaga
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
+import org.json.JSONObject
 import kotlin.collections.ArrayList
 
 class Vaga(private val context: Context, private val editor: SharedPreferences.Editor?) {
@@ -30,16 +33,15 @@ class Vaga(private val context: Context, private val editor: SharedPreferences.E
     )
 
     fun listVagas(callback: GetVagaCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/vaga/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "vagas.json")
+        val response = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("vagas")
                     val ar_img_list_Vaga = ArrayList<imagem_vaga>()
 
                     for (i in 0 until jsonArray.length()) {
                         val item = jsonArray.getJSONObject(i)
+
                         val vagaId = item.getInt("vagaId")
                         val titulo = item.getString("titulo")
                         val descricao = item.getString("descricao")
@@ -49,7 +51,7 @@ class Vaga(private val context: Context, private val editor: SharedPreferences.E
                         val dataRegisto = item.getString("dataRegisto")
                         val dataAtualizacao = item.getString("dataAtualizacao")
                         val isInterna = item.getBoolean("isInterna")
-                        val userId = item.getInt("userId")
+                        val userId = 1
                         val filialId = item.getInt("filialId")
                         val departamentoId = item.getInt("departamentoId")
 
@@ -69,60 +71,47 @@ class Vaga(private val context: Context, private val editor: SharedPreferences.E
 
                         ar_img_list_Vaga.add(imgItem)
                     }
+                    Log.d("listvagasstring",
+                        "aqui")
 
                     callback.onSuccess(ar_img_list_Vaga)
                 } catch (e: JSONException) {
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
     }
 
     fun getVaga(id: Int, callback: GetVagaSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/vaga/get/$id"
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "vagas.json")
+        val response = JSONObject(jsonString)
 
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
+        if (response.has("vagas")) {
                     val dataObject = response.getJSONObject("data")
                     // Extrair os campos desejados do objeto "data"
-                    val user = Vaga(
-                        vagaId = dataObject.optInt("vagaId"),
-                        titulo = dataObject.optString("titulo"),
-                        descricao = dataObject.optString("descricao"),
-                        habilitacoesMin = dataObject.optString("habilitacoesMin"),
-                        experienciaMin = dataObject.optString("experienciaMin"),
-                        remuneracao = dataObject.optInt("remuneracao"),
-                        dataRegisto = dataObject.optString("dataRegisto"),
-                        dataAtualizacao = dataObject.optString("dataAtualizacao"),
-                        isInterna = dataObject.optBoolean("isInterna"),
-                        userId = dataObject.optInt("userId"),
-                        filialId = dataObject.optInt("filialId"),
-                        departamentoId = dataObject.optInt("departamentoId"),
-                    )
-                    callback.onSuccess(user)
+            if (id  == dataObject.optInt("vagaId")) {
+                val vaga = Vaga(
+                    vagaId = dataObject.optInt("vagaId"),
+                    titulo = dataObject.optString("titulo"),
+                    descricao = dataObject.optString("descricao"),
+                    habilitacoesMin = dataObject.optString("habilitacoesMin"),
+                    experienciaMin = dataObject.optString("experienciaMin"),
+                    remuneracao = dataObject.optInt("remuneracao"),
+                    dataRegisto = dataObject.optString("dataRegisto"),
+                    dataAtualizacao = dataObject.optString("dataAtualizacao"),
+                    isInterna = dataObject.optBoolean("isInterna"),
+                    userId = dataObject.optInt("userId"),
+                    filialId = dataObject.optInt("filialId"),
+                    departamentoId = dataObject.optInt("departamentoId"),
+                )
+                callback.onSuccess(vaga)
+            }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados da vaga. Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
 
-        requestQueue.add(request)
     }
 
     interface GetVagaCallback {

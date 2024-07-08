@@ -1,0 +1,42 @@
+  {
+  "parcerias": [
+      {
+        "parceriaId": 1,
+        "nomeParceiro":"Parceiro 1", 
+        "email":"gomes@gmail.com",
+        "telemovel":"912345678",
+        "dataRegisto":"2019-12-12",
+        "dataAtualizacao":"2019-12-12",
+        "userId": 1
+        
+      },
+    {
+        "parceriaId": 2,
+        "nomeParceiro":"Parceiro 2", 
+        "email":"guilherme@gmail.com",
+        "telemovel":"912225678",
+        "dataRegisto":"2019-12-15",
+        "dataAtualizacao":"2019-12-16",
+        "userId": 2
+
+
+    },
+    {
+      
+
+        "parceriaId": 3,
+        "nomeParceiro":"Parceiro 3",
+        "email":"goncalo@gmail.com",
+        "telemovel":"912345679",
+        "dataRegisto":"2019-12-18",
+        "dataAtualizacao":"2019-12-19",
+        "userId": 3
+
+
+
+
+
+
+    }
+    ]
+  }

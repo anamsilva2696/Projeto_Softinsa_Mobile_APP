@@ -1,0 +1,25 @@
+{
+  "departamentos": [
+    {
+      "departamentoId": 1,
+      "depertamentoNome": "Recursos Humanos",
+      "dataCriacao": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "descricao": "Departamento responsável pela gestão de pessoas"
+    },
+    {
+      "departamentoId": 2,
+      "depertamentoNome": "Financeiro",
+      "dataCriacao": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "descricao": "Departamento responsável pela gestão financeira"
+    },
+    {
+      "departamentoId": 3,
+      "depertamentoNome": "Tecnologia da Informação",
+      "dataCriacao": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "descricao": "Departamento responsável pela gestão de tecnologia"
+    }
+  ]
+}

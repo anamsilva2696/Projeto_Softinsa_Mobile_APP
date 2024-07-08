@@ -1,0 +1,51 @@
+{
+    "vagas": [
+        {
+          "vagaId": 1,
+          "titulo":"Vaga 1",
+          "descricao":"Vaga 1",
+          "habilitacoesMin":"Licenciatura",
+          "experienciaMin":"1 ano",
+          "remuneracao": 1000,
+          "dataRegisto":"2019-12-12",
+          "dataAtualizacao":"2019-12-16",
+          "isInterna":true,
+          "filialId":1,
+          "departamentoId": 1
+          
+          
+        },
+        {
+  
+          "vagaId": 2,
+          "titulo":"Vaga 2",
+          "descricao":"Vaga 2",
+          "habilitacoesMin":"Mestrado",
+          "experienciaMin":"2 anos",
+          "remuneracao": 2000,
+          "dataRegisto":"2019-12-12",
+          "dataAtualizacao":"2019-12-16",
+          "isInterna":false,
+          "filialId":2,
+          "departamentoId": 2
+  
+  
+        },
+        {
+  
+          "vagaId": 3,
+          "titulo":"Vaga 3",
+          "descricao":"Vaga 3",
+          "habilitacoesMin":"Doutoramento",
+          "experienciaMin":"3 anos",
+          "remuneracao": 3000,
+          "dataRegisto":"2019-12-12",
+          "dataAtualizacao":"2019-12-16",
+          "isInterna":false,
+          "filialId":3,
+          "departamentoId": 3
+          
+        }
+     
+      ]
+    }

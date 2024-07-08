@@ -1,0 +1,28 @@
+{
+  "beneficios": [
+    {
+      "id": 1,
+      "titulo": "Seguro de saúde",
+      "descricao": "A empresa oferece um seguro de saúde aos seus colaboradores",
+      "dataRegisto": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "tipo": "saude"
+    },
+    {
+      "id": 2,
+      "titulo": "Cartão de refeição",
+      "descricao": "A empresa oferece um cartão de refeição aos seus colaboradores",
+      "dataRegisto": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "tipo": "saude"
+    },
+    {
+      "id": 3,
+      "titulo": "Seguro de vida",
+      "descricao": "A empresa oferece um seguro de vida aos seus colaboradores",
+      "dataRegisto": "2024-01-01",
+      "dataAtualizacao": "2024-01-05",
+      "tipo": "saude"
+    }
+  ]
+}

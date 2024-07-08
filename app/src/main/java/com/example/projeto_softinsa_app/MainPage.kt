@@ -29,12 +29,13 @@ class MainPage : AppCompatActivity() {
         userId = authorization.getUserId()
         perfil = Perfil(this, getSharedPreferences("loginPrefs", Context.MODE_PRIVATE).edit())
 
-        perfil.getUser(userId, object : Perfil.GetUserCallback {
+        perfil.getUser(1, object : Perfil.GetUserCallback {
             override fun onSuccess(user: Perfil.User) {
                 val sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
                 editor.putInt("cargoId", user.cargoId)
                 editor.putBoolean("isColaborador", user.isColaborador)
+
                 editor.apply()
                 nome.text = user.primeiroNome + " " + user.ultimoNome
             }

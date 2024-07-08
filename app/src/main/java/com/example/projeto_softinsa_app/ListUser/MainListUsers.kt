@@ -1,8 +1,10 @@
 package com.example.projeto_softinsa_app.ListUser
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageButton
@@ -12,8 +14,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.projeto_softinsa_app.*
+import com.example.projeto_softinsa_app.API.Perfil
 import com.example.projeto_softinsa_app.Des_tudo.imagem_lista_user
 import com.example.projeto_softinsa_app.Detailed.Detailed_list_users
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import com.example.projeto_softinsa_app.lvadapador.Lvadapador_lista_user
 import com.google.android.material.navigation.NavigationView
 import okhttp3.*
@@ -22,6 +26,8 @@ import org.json.JSONException
 import java.io.IOException
 
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MainListUsers : AppCompatActivity() {
 
@@ -32,13 +38,14 @@ class MainListUsers : AppCompatActivity() {
     private var lv_Lista_user: ListView? = null
     private var ada: Lvadapador_lista_user? = null
     private var ar_img_list_User_list: ArrayList<imagem_lista_user>? = null
+    lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_list_users)
 
         lv_Lista_user = findViewById(R.id.lv_Lista_user)
-
+context = this
         fetchDataFromServer()
 
         lv_Lista_user!!.setOnItemClickListener { _, _, position, _ ->
@@ -103,11 +110,14 @@ class MainListUsers : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body?.string()
+               // val responseBody = response.body?.string()
+                val responseBody = JsonHelper.ReadJSONFromAssets(context, "users.json")
+                //val obj = JSONObject(jsonString)
+
 
                 try {
                     val jsonObject = JSONObject(responseBody)
-                    val jsonArray = jsonObject.getJSONArray("data")
+                    val jsonArray = jsonObject.getJSONArray("users")
 
                     ar_img_list_User_list = ArrayList()
 

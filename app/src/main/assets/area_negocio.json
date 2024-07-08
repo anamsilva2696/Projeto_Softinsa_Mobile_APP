@@ -1,0 +1,17 @@
+{
+  "areas-negocio": [
+    {
+      "areaNegocioId": 1,
+      "areaNegocioNome": "Gestão de Projetos"
+    },
+    
+    {
+      "areaNegocioId": 2,
+      "areaNegocioNome": "Desenvolvimento de Software"
+    },
+    {
+      "areaNegocioId": 3,
+      "areaNegocioNome": "Gestão de Pessoas"
+    }
+  ]
+}

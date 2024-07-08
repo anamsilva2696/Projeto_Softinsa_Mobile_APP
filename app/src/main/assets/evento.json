@@ -1,0 +1,41 @@
+{
+  "eventos": [
+    {
+      "eventoId": 1,
+      "titulo": "Evento 1",
+      "descricao": "Descrição do evento 1",
+      "tipo": "Tipo do evento 1",
+      "dataInicio": "2019-01-01",
+      "dataFim": "2019-01-02",
+      "estadoId": 1,
+      "userId": 1,
+      "notas":"Notas do evento 1"
+    },
+    {
+     
+     "eventoId": 2,
+      "titulo": "Evento 2",
+      "descricao": "Descrição do evento 2",
+      "tipo": "Tipo do evento 2",
+      "dataInicio": "2019-01-01",
+      "dataFim": "2019-01-02",
+      "estadoId": 1,
+      "userId": 1,
+      "notas":"Notas do evento 2" 
+
+    },
+    {
+      "eventoId": 3,
+      "titulo": "Evento 3",
+      "descricao": "Descrição do evento 3",
+      "tipo": "Tipo do evento 3",
+      "dataInicio": "2019-01-01",
+      "dataFim": "2019-01-02",
+      "estadoId": 1,
+      "userId": 1,
+      "notas":"Notas do evento 3"
+
+
+    }
+  ]
+}

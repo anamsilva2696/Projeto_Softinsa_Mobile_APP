@@ -1,0 +1,56 @@
+{
+  "projetos": [
+      {
+        "projetoId": 1,
+        "projetoNome":"Projeto 1", 
+        "descricao":"Projeto 1",
+        "orcamento": 1000,
+        "prioridade":"Alta",
+        "dataRegisto":"2019-12-12",
+        "dataAtualizacao":"2019-12-16",
+        "dataInicio":"2019-12-12",
+        "dataFim":"2019-12-16",
+        "estadoId": 1,
+        "userId": 1,
+        "tipoProjetoId":1
+        
+      },
+      {
+
+        "projetoId": 2,
+        "projetoNome":"Projeto 2",
+        "descricao":"Projeto 2",
+        "orcamento": 2000,
+        "prioridade":"Baixa",
+        "dataRegisto":"2019-12-12",
+        "dataAtualizacao":"2019-12-16",
+        "dataInicio":"2019-12-12",
+        "dataFim":"2019-12-16",
+        "estadoId": 2,
+        "userId": 2,
+        "tipoProjetoId":2
+
+
+      },
+      {
+
+        "projetoId": 3,
+        "projetoNome":"Projeto 3",
+        "descricao":"Projeto 3",
+        "orcamento": 3000,
+        "prioridade":"Media",
+        "dataRegisto":"2019-12-12",
+        "dataAtualizacao":"2019-12-16",
+        "dataInicio":"2019-12-12",
+        "dataFim":"2019-12-16",
+        "estadoId": 3,
+        "userId": 3,
+        "tipoProjetoId":3
+        
+
+
+
+      }
+   
+    ]
+  }

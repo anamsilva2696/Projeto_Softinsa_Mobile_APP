@@ -1,0 +1,20 @@
+{
+"eventoUser": [
+    {
+      "eventoId": 1,
+      "userId": 1
+    
+    },
+    {
+      "eventoId": 2,
+      "userId": 2
+      
+    },
+    {
+      "eventoId": 3,
+      "userId": 3
+    
+    }
+   
+  ]
+}

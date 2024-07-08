@@ -230,6 +230,7 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
 
             override fun onFailure(errorMessage: String) {
                 Log.d("tag", errorMessage)
+
                 // Handle the failure case
             }
         })

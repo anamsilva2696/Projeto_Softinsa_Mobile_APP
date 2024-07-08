@@ -1,0 +1,19 @@
+{
+  "cargos": [
+    {
+      "cargoId": 1,
+      "cargoNome": "Colaborador"
+    },
+    
+    {
+      "cargoId": 2,
+      "cargoNome": "Analista de Negócios"
+    },
+    
+    {
+      "cargoId": 3,
+      "cargoNome": "Analista de Suporte"
+    }
+    
+  ]
+}

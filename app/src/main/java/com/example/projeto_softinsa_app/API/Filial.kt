@@ -1,11 +1,10 @@
 package com.example.projeto_softinsa_app.API
 import android.content.Context
 import android.content.SharedPreferences
-import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
+import org.json.JSONObject
 
 class Filial(private val context: Context, private val editor: SharedPreferences.Editor?) {
 
@@ -21,12 +20,11 @@ class Filial(private val context: Context, private val editor: SharedPreferences
     )
 
     fun getFilial(callback: GetFilialCallback, id: Int) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/filial/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "filial.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("filiais")) {
+                    val dataObject = response.getJSONObject("filiais")
+                    if (id == dataObject.optInt("filialId")) {
                         val filial = Filial(
                             filialId = dataObject.optInt("filialId"),
                             filialNome = dataObject.optString("filialNome"),
@@ -34,22 +32,14 @@ class Filial(private val context: Context, private val editor: SharedPreferences
                             telemovel = dataObject.optString("telemovel"),
                             email = dataObject.optString("email")
 
-                    )
-                    callback.onSuccess(filial)
+                        )
+                        callback.onSuccess(filial)
+                    }
                 } else {
                     val errorMessage = "Resposta JSON Inválida"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Handle request error and call the onFailure callback with the error message
-                val errorMessage = "A obter a filial"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     interface GetFilialCallback {
         fun onSuccess(user: Filial)

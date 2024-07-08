@@ -1,0 +1,88 @@
+{
+  "users": [
+      {
+        "userId": 1,
+        "googleId":1,
+        "primeiroNome":"José",
+        "ultimoNome":"Almeida",
+        "numeroFuncionario":1,
+        "email":"jose@gmail.com",
+        "password":"123456",
+        "telemovel":"912345678",
+        "morada":"Rua 1",
+        "salario": 1000,
+        "ultimoLogin": "2019-12-12",
+        "dataContratacao":"2019-12-12",
+        "isPrimeiroLogin":false,
+        "isAtivo":true,
+        "isColaborador":true,
+        "verificationToken":"",
+        "recoverToken":"",
+        "cargo": {
+          "cargoId": 1,
+          "cargoNome": "Colaborador"
+        },
+        "departamentoId":1,
+        "filialId":1
+        
+      },
+      {
+
+        "userId": 2,
+        "googleId":2,
+        "primeiroNome":"Joaquim",
+        "ultimoNome":"das Fontes",
+        "numeroFuncionario":2,
+        "email":"joaquim@gmail.com",
+        "password":"123456",
+        "telemovel":"912345678",
+        "morada":"Rua 2",
+        "salario": 2000,
+        "ultimoLogin": "2019-12-12",
+        "dataContratacao":"2019-12-12",
+        "isPrimeiroLogin":false,
+        "isAtivo":true,
+        "isColaborador":false,
+        "verificationToken":"",
+        "recoverToken":"",
+        "cargo": {
+          "cargoId": 2,
+          "cargoNome": "Analista de Negócios"
+        },
+        "departamentoId":2,
+        "filialId":2
+
+
+      },
+      {
+
+        "userId": 3,
+        "googleId":3,
+        "primeiroNome":"Maria",
+        "ultimoNome":"do Mar",
+        "numeroFuncionario":3,
+        "email":"maria@gmail.com",
+        "password":"123456",
+        "telemovel":"912345678",
+        "morada":"Rua 3",
+        "salario": 3000,
+        "ultimoLogin": "2019-12-12",
+        "dataContratacao":"2019-12-12",
+        "isPrimeiroLogin":false,
+        "isAtivo":true,
+        "isColaborador":false,
+        "verificationToken":"",
+        "recoverToken":"",
+        "cargo": {
+          "cargoId": 3,
+          "cargoNome": "Analista de Suporte"
+        },
+        "departamentoId":3,
+        "filialId":3
+
+
+
+      }
+   
+    ]
+  }

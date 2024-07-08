@@ -35,10 +35,13 @@ object NavigationViewHelper {
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        var cargoId = 0
+        var isColaborador: Boolean
+        var cargoId: Int
+
 
 
         val user = Perfil(activity, null)
+        isColaborador = user.getStoredIsColaborador()
         cargoId = user.getStoredCargoId()
 
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -67,7 +70,7 @@ object NavigationViewHelper {
                     activity.startActivity(intent5)
                 }
                 R.id.nav_list_users -> {
-                    if(cargoId!=1)
+                    if(!isColaborador)
                     {
                         Toast.makeText(activity, "Não tens permissões para aceder à lista de utilizadores.", Toast.LENGTH_SHORT).show()
                     }else{
@@ -77,7 +80,7 @@ object NavigationViewHelper {
                 }
 
                 R.id.reporting -> {
-                    if(cargoId!=1)
+                    if(!isColaborador)
                     {
                         Toast.makeText(activity, "Não tens permissões para aceder ao reporting.", Toast.LENGTH_SHORT).show()
                     }else

@@ -1,0 +1,18 @@
+{
+"estados": [
+    {
+      "estadoId": 1,
+      "estadoNome": "Aprovado"
+      
+    },
+    {
+      "estadoId": 2,
+      "estadoNome": "Reprovado"
+      
+    },
+    {
+      "estadoId": 3,
+      "estadoNome": "Em Análise"
+    }
+  ]
+}

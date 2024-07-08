@@ -1,0 +1,40 @@
+{
+"negocios": [
+    {
+      "negocioId": 1,
+      "email": "retail@gmail.com",
+      "telemovel":"963453211",
+      "orcamento":1000,
+      "decricao":"loja de roupa",
+      "dataRegisto":"2019-12-12",
+      "dataAtualizacao":"2019-12-12",
+      "userId": 1,
+      "areNegocioId": 1
+      
+    },
+   {
+    "negocioId": 2,
+    "email": "remtl@gmail.com",
+    "telemovel":"963453321",
+    "orcamento":1000,
+    "decricao":"loja de computadores",
+    "dataRegisto":"2019-12-12",
+    "dataAtualizacao":"2019-12-12",
+    "userId": 2,
+    "areNegocioId": 2
+
+   }
+   {
+    "negocioId": 1,
+    "email": "filme@gmail.com",
+    "telemovel":"9634531111",
+    "orcamento":1000,
+    "decricao":"loja de filmes",
+    "dataRegisto":"2019-12-12",
+    "dataAtualizacao":"2019-12-12",
+    "userId": 3,
+    "areNegocioId": 3
+
+   }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "candidaturas": [
+    {
+      "candidaturaId": 1,
+      "dataCriacao":"2021-09-01",
+      "dataAtualizacao":"2024-09-02",
+      "cv":"cv.pdf",
+      "isAtiva": true,
+      "vagaId": 1
+    },
+    {
+      "candidaturaId": 2,
+      "dataCriacao":"2021-09-10",
+      "dataAtualizacao":"2024-09-11",
+      "cv":"cv.pdf",
+      "isAtiva": true,
+      "vagaId": 2
+
+    },
+    {
+      "candidaturaId": 3,
+      "dataCriacao":"2021-09-12",
+      "dataAtualizacao":"2024-09-13",
+      "cv":"cv.pdf",
+      "isAtiva": true,
+      "vagaId": 3
+    }
+  ]
+}
