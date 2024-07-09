@@ -2,6 +2,7 @@ package com.example.projeto_softinsa_app.login
 
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import com.android.volley.Request
@@ -9,8 +10,14 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.projeto_softinsa_app.Helpers.FileUtils
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
+import com.example.projeto_softinsa_app.MainActivity
+import com.example.projeto_softinsa_app.MainCandidatura
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.util.Collections
 
 
 class Authorization(private val context: Context, private val editor: SharedPreferences.Editor?) {
@@ -29,46 +36,39 @@ class Authorization(private val context: Context, private val editor: SharedPref
     }
 
     fun login(email: String, password: String, isPrimeiroLogin: Boolean, callback: LoginCallback) {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/auth/login" // Substitua pela sua URL de API para login
-
-        val body = JSONObject()
-        try {
-            body.put("email", email)
-            body.put("password", password)
-            body.put("isPrimeiroLogin", isPrimeiroLogin)
-        } catch (e: JSONException) {
-            e.printStackTrace()
+        var jsonString = ""
+        val file = File(context.filesDir, "users.json")
+        if (file.exists()) {
+            jsonString = FileUtils.readFile(context, "users.json")
+        } else {
+            jsonString = JsonHelper.ReadJSONFromAssets(context, "users.json")
         }
+        val response: JSONObject = JSONObject(jsonString)
+        try {
+            val jsonArray = response.getJSONArray("users")
 
-        val request = JsonObjectRequest(Request.Method.POST, url, body,
-            Response.Listener { response ->
-                val token = response.optString("accessToken")
-                val userId = response.optInt("userId")
-                isServerPrimeiroLogin = response.optBoolean("isPrimeiroLogin")
-                // Imprimir a resposta JSON para solução de problemas
-                Log.d("Authorization", "Response JSON: $response")
-                Log.d("Authorization", "isServerPrimeiroLogin: $isServerPrimeiroLogin")
-
-                if (token.isNotEmpty()) {
+            for (i in 0 until jsonArray.length()) {
+                val item = jsonArray.getJSONObject(i)
+                val token = item.getString("accessToken")
+                val userId = item.getInt("userId")
+                isServerPrimeiroLogin = item.getBoolean("isPrimeiroLogin")
+                if (email == item.getString("email") && password == item.getString("password")) {
                     editor?.putString("token", token)
                     editor?.putInt("userId", userId)
+                    saveUserId(context, userId)
                     editor?.putBoolean("isPrimeiroLogin", isPrimeiroLogin)
                     Log.d("tag", userId.toString())
                     editor?.apply()
-
                     callback.onSuccess(token)
                 } else {
-                    val errorMessage = "Failed to login. Token not found."
-                    callback.onFailure(errorMessage)
+                    //val errorMessage = "Failed to login. Token not found."
+                    //callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                val errorMessage = "Failed to login. Please check your credentials."
-                callback.onFailure(errorMessage)
-            })
+            }
 
-        requestQueue.add(request)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
@@ -104,43 +104,65 @@ class Authorization(private val context: Context, private val editor: SharedPref
         isPrimeiroLogin: Boolean,
         callback: LoginCallback
     ) {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/auth/signup" // Substitua pela URL da sua API para registro
-
-        val body = JSONObject()
+        var jsonString = ""
+        val file = File(context.filesDir, "users.json")
+        if (file.exists()) {
+            jsonString = FileUtils.readFile(context, "users.json")
+        } else {
+            jsonString = JsonHelper.ReadJSONFromAssets(context, "users.json")
+        }
+        val response: JSONObject = JSONObject(jsonString)
         try {
-            body.put("primeiroNome", primeiroNome)
-            body.put("ultimoNome", ultimoNome)
-            body.put("telemovel", telemovel)
-            body.put("email", email)
-            body.put("password", password)
-            body.put("isPrimeiroLogin", isPrimeiroLogin)
-        } catch (e: JSONException) {
-            e.printStackTrace()
+            val body = JSONObject()
+            val cargoObjeto = JSONObject()
+            val userIds = ArrayList<Int>()
+            val array = response.getJSONArray("users")
+            for (i in 0 until array.length()) {
+                val item = array.getJSONObject(i)
+                val userId: Int = item.getInt("userId")
+                userIds.add(userId)
+            }
+
+            val sortedNumbers = userIds.sortedDescending()
+
+            var insertUserId = sortedNumbers.first() + 1
+
+            body.put("userId", insertUserId)
+                body.put("googleId", "")
+                body.put("primeiroNome", primeiroNome)
+                body.put("ultimoNome", ultimoNome)
+                body.put("numeroFuncionario", 1)
+                body.put("email", email)
+                body.put("password", password)
+                body.put("telemovel", telemovel)
+                body.put("morada", "Rua 1")
+                body.put("salario", 2000)
+                body.put("ultimoLogin", JsonHelper.getCurrentDateFormatted())
+                body.put("dataContratacao", JsonHelper.getCurrentDateFormatted())
+                body.put("dataRegisto", JsonHelper.getCurrentDateFormatted())
+                body.put("isPrimeiroLogin", false)
+                body.put("isAtivo", true)
+                body.put("isColaborador", true)
+                body.put("isCandidato", false)
+                body.put("verificationToken", "")
+                body.put("accessToken", "")
+                body.put("recoverToken", "")
+                cargoObjeto.put("cargoId", 1)
+                cargoObjeto.put("cargoNome", "Colaborador")
+                body.put("cargo", cargoObjeto)
+                body.put("departamentoId", 1)
+                body.put("filialId", 1)
+
+                JsonHelper.addToJsonFile(context, "users.json", body, "users")
+
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
         }
 
-        val request = JsonObjectRequest(Request.Method.POST, url, body,
-            Response.Listener { response ->
-                // Print the response JSON for troubleshooting
-                Log.d("Authorization", "Response JSON: $response")
-
-                // Verifique se o registro foi bem-sucedido com base na resposta do servidor
-                val success = response.optBoolean("success")
-                if (success) {
-                    callback.onSuccess("Registration successful")
-                } else {
-                    val errorMessage = response.optString("message", "Failed to sign up.")
-                    callback.onFailure(errorMessage)
-                }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lida com o erro de registro e chama o onFailure callback com a mensagem de erro
-                val errorMessage = "Failed to sign up."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
 
     // Função getUserDetail() removida, pois não parece estar relacionada às colunas desejadas.
 

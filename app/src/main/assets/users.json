@@ -18,6 +18,7 @@
         "isAtivo":true,
         "isColaborador":true,
         "isCandidato":false,
+        "accessToken":"",
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {
@@ -47,6 +48,7 @@
         "isAtivo":true,
         "isColaborador":false,
         "isCandidato":false,
+        "accessToken":"",
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {
@@ -77,6 +79,7 @@
         "isAtivo":true,
         "isColaborador":false,
         "isCandidato":false,
+        "accessToken":"",
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {

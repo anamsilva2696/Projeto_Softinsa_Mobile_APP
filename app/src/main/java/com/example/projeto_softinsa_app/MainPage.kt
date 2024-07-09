@@ -29,7 +29,7 @@ class MainPage : AppCompatActivity() {
         userId = authorization.getUserId()
         perfil = Perfil(this, getSharedPreferences("loginPrefs", Context.MODE_PRIVATE).edit())
 
-        perfil.getUser(1, object : Perfil.GetUserCallback {
+        perfil.getUser(userId, object : Perfil.GetUserCallback {
             override fun onSuccess(user: Perfil.User) {
                 val sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
