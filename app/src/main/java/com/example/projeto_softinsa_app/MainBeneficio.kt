@@ -12,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.projeto_softinsa_app.Des_tudo.imagem_ben
 import com.example.projeto_softinsa_app.Detailed.Detailed_ben
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import com.example.projeto_softinsa_app.ListUser.MainListUsers
 import com.example.projeto_softinsa_app.lvadapador.lvadapatador_ben
 import com.google.android.material.navigation.NavigationView
@@ -79,29 +80,10 @@ class MainBeneficio : AppCompatActivity() {
     }
 
     private fun fetchDataFromServer() {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/beneficio/list"
-
-        val client = OkHttpClient()
-
-        val request = Request.Builder()
-            .url(url)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(applicationContext, "Erro ao obter dados do servidor: ${e.message}", Toast.LENGTH_LONG).show()
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body?.string()
-
-                try {
-                    val jsonObject = JSONObject(responseBody)
-                    val jsonArray = jsonObject.getJSONArray("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(this, "beneficio.json")
+        val response: JSONObject = JSONObject(jsonString)
+        try {
+            val jsonArray = response.getJSONArray("beneficios")
                     ar_img_list_ben = ArrayList()
 
                     for (i in 0 until jsonArray.length()) {
@@ -129,7 +111,6 @@ class MainBeneficio : AppCompatActivity() {
                         e.printStackTrace()
                     }
                 }
-            }
-        })
+
     }
 }

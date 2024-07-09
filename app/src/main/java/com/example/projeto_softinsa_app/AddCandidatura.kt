@@ -14,6 +14,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.projeto_softinsa_app.login.Authorization
 import com.example.projeto_softinsa_app.API.Candidatura
+import com.example.projeto_softinsa_app.Detailed.Detailed_candidatura
 import com.google.android.material.navigation.NavigationView
 
 
@@ -27,6 +28,7 @@ class AddCandidatura : AppCompatActivity() {
     private lateinit var pdfUri: Uri
     private lateinit var pdfData: ByteArray
     var userId = 0
+    var candidaturaId = 5
 
     private fun selectPdf() {
         val pdfIntent = Intent(Intent.ACTION_GET_CONTENT)
@@ -53,7 +55,8 @@ class AddCandidatura : AppCompatActivity() {
         btCandidatar.setOnClickListener {
             val candidatura = Candidatura(this, null)
             candidatura.createCandidatura(
-                userId,
+                1,
+                candidaturaId,
                 IDVaga,
                 pdfData,
                 object : Candidatura.GetCandidaturaSingleCallback {
@@ -63,6 +66,10 @@ class AddCandidatura : AppCompatActivity() {
                             "Candidatura Submetida",
                             Toast.LENGTH_SHORT
                         ).show()
+                        candidaturaId += 1
+                        val intent = Intent(this@AddCandidatura, MainCandidatura::class.java)
+                        intent.putExtra("ID", IDVaga)
+                        startActivity(intent)
                     }
 
                     override fun onFailure(errorMessage: String) {

@@ -103,26 +103,6 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
     private var isProjetosLoaded = false
     private var isParceriasLoaded = false
 
-    private fun tryShowBarchart() {
-        if (isInvestimentosLoaded && isNegociosLoaded) {
-            val composeView = findViewById<ComposeView>(R.id.composeView)
-            composeView.setContent {
-                BarchartWithSolidBars(investimentosLista, negociosLista, projetosLista, parceriasLista)
-            }
-
-            val composeView2 = findViewById<ComposeView>(R.id.composeView2)
-            composeView2.setContent {
-                BarchartWithSolidBarsVagas(vagasLista, candidaturasLista)
-            }
-
-            val composeView3 = findViewById<ComposeView>(R.id.composeView3)
-            composeView3.setContent {
-                PieChartUsersCargos(usersLista)
-            }
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_reporting)
@@ -146,7 +126,6 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
                 DatePickerDialog(this@MainReporting, this@MainReporting, year, month,day)
             datePickerDialog.show()
         }
-
 
         negocioApi.listNegocios(object : Negocio.GetNegocioCallback {
             override fun onSuccess(negocios: List<imagem_negocio>) {
@@ -201,9 +180,9 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
             }
         })
 
-        userApi.listUser(object : Perfil.GetUserListaCallback {
-            override fun onSuccess(users: List<imagem_lista_user>) {
-                usersLista = users
+        candidaturaApi.listCandidaturas(object : Candidatura.GetCandidaturaCallback {
+            override fun onSuccess(candidaturas: List<imagem_candidatura>) {
+                candidaturasLista = candidaturas
             }
 
             override fun onFailure(errorMessage: String) {
@@ -212,12 +191,15 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
             }
         })
 
-        candidaturaApi.listCandidaturas(object : Candidatura.GetCandidaturaCallback {
-            override fun onSuccess(candidaturas: List<imagem_candidatura>) {
-                candidaturasLista = candidaturas
+        userApi.listUser(object : Perfil.GetUserListaCallback {
+            override fun onSuccess(users: List<imagem_lista_user>) {
+                Log.d("user list aqui", users.get(0).toString())
+                usersLista = users
             }
 
             override fun onFailure(errorMessage: String) {
+                Log.d("user list aqui",errorMessage)
+
                 Log.d("tag", errorMessage)
                 // Handle the failure case
             }
@@ -262,6 +244,29 @@ class MainReporting : AppCompatActivity(), DatePickerDialog.OnDateSetListener{
         myMonth = month
         val calendar: Calendar = Calendar.getInstance()
     }
+
+    private fun tryShowBarchart() {
+        if (isInvestimentosLoaded && isNegociosLoaded) {
+            val composeView = findViewById<ComposeView>(R.id.composeView)
+            composeView.setContent {
+                BarchartWithSolidBars(investimentosLista, negociosLista, projetosLista, parceriasLista)
+            }
+
+            val composeView2 = findViewById<ComposeView>(R.id.composeView2)
+            composeView2.setContent {
+                BarchartWithSolidBarsVagas(vagasLista, candidaturasLista)
+            }
+
+            val composeView3 = findViewById<ComposeView>(R.id.composeView3)
+            composeView3.setContent {
+                if(::usersLista.isInitialized) {
+                    PieChartUsersCargos(usersLista)
+                }
+            }
+        }
+    }
+
+
 
 }
 

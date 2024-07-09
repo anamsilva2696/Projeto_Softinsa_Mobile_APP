@@ -1,6 +1,7 @@
 {
   "candidaturas": [
     {
+      "userId": 1,
       "candidaturaId": 1,
       "dataCriacao":"2021-09-01",
       "dataAtualizacao":"2024-09-02",
@@ -9,6 +10,7 @@
       "vagaId": 1
     },
     {
+      "userId": 2,
       "candidaturaId": 2,
       "dataCriacao":"2021-09-10",
       "dataAtualizacao":"2024-09-11",
@@ -18,6 +20,7 @@
 
     },
     {
+      "userId": 1,
       "candidaturaId": 3,
       "dataCriacao":"2021-09-12",
       "dataAtualizacao":"2024-09-13",

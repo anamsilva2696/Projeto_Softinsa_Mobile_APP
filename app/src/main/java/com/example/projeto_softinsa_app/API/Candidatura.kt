@@ -11,7 +11,10 @@ import com.example.projeto_softinsa_app.Des_tudo.imagem_candidatura
 import org.json.JSONException
 import android.util.Base64
 import android.util.Log
+import com.example.projeto_softinsa_app.Helpers.FileUtils
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONObject
+import java.io.File
 
 class Candidatura(private val context:Context, private val editor: SharedPreferences.Editor?)  {
 
@@ -28,12 +31,16 @@ class Candidatura(private val context:Context, private val editor: SharedPrefere
     }
 
     fun listCandidaturas(callback: GetCandidaturaCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/candidatura/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            { response ->
+        var jsonString = ""
+        val file = File(context.filesDir, "candidatura.json")
+        if (file.exists()) {
+            jsonString = FileUtils.readFile(context, "candidatura.json")
+        } else {
+            jsonString = JsonHelper.ReadJSONFromAssets(context, "candidatura.json")
+        }
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("candidaturas")
                     val ar_img_list_Candidatura= ArrayList<imagem_candidatura>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -77,35 +84,33 @@ class Candidatura(private val context:Context, private val editor: SharedPrefere
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     fun listCandidaturasUser(userId: Int, callback: GetCandidaturaCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/candidatura/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            { response ->
+        var jsonString = ""
+        val file = File(context.filesDir, "candidatura.json")
+        jsonString = if (file.exists()) {
+            FileUtils.readFile(context, "candidatura.json")
+        } else {
+            JsonHelper.ReadJSONFromAssets(context, "candidatura.json")
+        }
+        Log.d("JSON STRING ANDIDATURA USER", jsonString)
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("candidaturas")
                     val ar_img_list_Candidatura = ArrayList<imagem_candidatura>()
 
                     for (i in 0 until jsonArray.length()) {
                         val item = jsonArray.getJSONObject(i)
                         val itemUserId = item.getInt("userId") // Get the userId from the JSON
-
+Log.d("item user id", itemUserId.toString())
                         if (itemUserId == userId) { // Check if the userId matches the desired userId
                             val candidaturaId = item.getInt("candidaturaId")
                             val dataCriacao = item.getString("dataCriacao")
                             val dataAtualizacao = item.getString("dataAtualizacao")
                             val isAtiva = item.getBoolean("isAtiva")
                             val vagaId = item.getInt("vagaId")
-                            val cvDataObject = item.optJSONObject("cv")
+                          /*  val cvDataObject = item.optJSONObject("cv")
                             val cvDataArray = cvDataObject?.optJSONArray("data")
                             val cv = cvDataArray?.let { jsonArray ->
                                 val cvBytes = ByteArray(jsonArray.length())
@@ -116,7 +121,7 @@ class Candidatura(private val context:Context, private val editor: SharedPrefere
                                     type = cvDataObject?.optString("type"),
                                     data = cvBytes.map { it.toInt() }
                                 )
-                            }
+                            }*/
 
                             val imgItem = imagem_candidatura()
                             imgItem.atr_candidaturaId_candidatura(candidaturaId)
@@ -125,7 +130,7 @@ class Candidatura(private val context:Context, private val editor: SharedPrefere
                             imgItem.atr_isAtiva_candidatura(isAtiva)
                             imgItem.atr_userId_candidatura(userId) // Use the passed userId
                             imgItem.atr_vagaId_candidatura(vagaId)
-                            imgItem.atr_cv_candidatura(cv)
+                            //imgItem.atr_cv_candidatura(cv)
 
                             ar_img_list_Candidatura.add(imgItem)
                         }
@@ -136,49 +141,32 @@ class Candidatura(private val context:Context, private val editor: SharedPrefere
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
 
-    fun createCandidatura(userId: Int, vagaId: Int, cvData: ByteArray, callback: GetCandidaturaSingleCallback) {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/candidatura/create"
+    fun createCandidatura(userId: Int, candidaturaId: Int, vagaId: Int, cvData: ByteArray, callback: GetCandidaturaSingleCallback) {
 
         val body = JSONObject()
         try {
-            body.put("cv", cvData)
-            body.put("userId", userId)
+            body.put("userId", vagaId)
+            body.put("candidaturaId", vagaId)
+            body.put("dataCriacao", JsonHelper.getCurrentDateFormatted())
+            body.put("dataAtualizacao", JsonHelper.getCurrentDateFormatted())
+            body.put("isAtiva", true)
             body.put("vagaId", vagaId)
+            JsonHelper.addToJsonFile(context, "candidatura.json", body, "candidaturas")
+            callback.onSuccess(true)
         } catch (e: JSONException) {
             e.printStackTrace()
         }
 
-        val request = JsonObjectRequest(
-            Request.Method.POST, url, body,
-            Response.Listener { response ->
-                if (response.has("data")) {
-                    val responseData = response.toString()
-                    Log.d("tag", responseData)
-                    val sucesso = true
-                    callback.onSuccess(sucesso)
-                } else {
-                    val errorMessage = "Resposta JSON Inválida"
-                    callback.onFailure(errorMessage)
-                }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-            })
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "candidatura.json")
+        Log.d("JSONSTRING CANDIDATURA", jsonString)
 
-        Log.d("tag", "API Request: URL: $url")
-        Log.d("tag", "API Request: Body: ${body.toString()}")
 
-        requestQueue.add(request)
+       // Log.d("tag", "API Request: URL: $url")
+       // Log.d("tag", "API Request: Body: ${body.toString()}")
+
     }
 
     fun deleteCandidatura(candidaturaId: Int, callback: CreateCandidaturaCallback) {

@@ -9,6 +9,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Des_tudo.imagem_projeto
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -39,14 +40,13 @@ class Projeto(private val context: Context, private val editor: SharedPreference
 
     fun getProjeto(id: Int, callback: GetProjetoSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/projeto/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "projetos.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("projetos")) {
+            val jsonArray = response.getJSONArray("projetos")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("projetoId")) {
                     // Extrair os campos desejados do objeto "data"
                     val projeto = Projeto(
                         projetoId = dataObject.optInt("projetoId"),
@@ -64,30 +64,21 @@ class Projeto(private val context: Context, private val editor: SharedPreference
                     )
 
                     callback.onSuccess(projeto)
+                    }
+                }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do projeto Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
 
     fun listProjetos(callback: GetProjetoCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/projeto/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "projetos.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("projetos")
                     val ar_img_list_projetotunidade = ArrayList<imagem_projeto>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -127,15 +118,7 @@ class Projeto(private val context: Context, private val editor: SharedPreference
                     val errorMessage = "Projeto - Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
-
+            }
     fun createProjeto(userId: Int, projetoNome: String, descricao: String, orcamento: String, prioridade: Int, tipoProjetoId: Int, callback: CreateProjetoCallback) {
         url = "https://softinsa-web-app-carreiras01.onrender.com/projeto/create"
 

@@ -71,14 +71,14 @@ class Lvadapador_calendario(private val context: Context, private val Calendario
     }
 
     private fun getTimeFromDate(dateTimeString: String): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = dateFormat.parse(dateTimeString)
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         return timeFormat.format(date)
     }
 
     private fun getDateFromDateTime(dateTimeString: String): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = dateFormat.parse(dateTimeString)
         val timeFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return timeFormat.format(date)

@@ -150,6 +150,7 @@ class MainCalendario : AppCompatActivity() {
 
                 for (event in calendarioArrayList) {
                         val eventDateStr = event.dataInicio_img_evento
+                        Log.i("Tag", "calendar array list: $eventDateStr")
 
                         // Parse the eventDate string to a Date object
                         val eventDate = dateFormat.parse(eventDateStr)
@@ -191,6 +192,7 @@ class MainCalendario : AppCompatActivity() {
                 val eventoAPI = Evento(this, null)
                 eventoAPI.listEventos(object : Evento.GetEventoCallback {
                         override fun onSuccess(eventos: List<imagem_evento>) {
+                                Log.d("eventos", eventos.toString())
                                 calendarioArrayList.clear()
                                 if (cargoId <= 2) {
                                         calendarioArrayList.addAll(eventos)
@@ -203,7 +205,7 @@ class MainCalendario : AppCompatActivity() {
 
 
                                 decoratorDates.clear() // Clear the previous decoratorDates
-                                val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                                 for (event in calendarioArrayList) {
                                         val date = dateFormat.parse(event.dataInicio_img_evento)
                                         val calendar = Calendar.getInstance()

@@ -71,6 +71,22 @@ class Authorization(private val context: Context, private val editor: SharedPref
         requestQueue.add(request)
     }
 
+    companion object {
+    fun saveUserId(context: Context, userId: Int) {
+        // Get the SharedPreferences instance
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
+
+        // Edit the SharedPreferences
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+
+        // Put the userId in SharedPreferences
+        editor.putInt("userId", userId)
+
+        // Apply the changes
+        editor.apply()
+    }
+    }
+
     fun getUserId(): Int {
         // Retrieve the userId from SharedPreferences
         return context.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)

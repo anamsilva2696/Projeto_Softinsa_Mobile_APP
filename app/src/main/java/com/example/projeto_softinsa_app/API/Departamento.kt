@@ -6,6 +6,8 @@
     import com.android.volley.Response
     import com.android.volley.toolbox.JsonObjectRequest
     import com.android.volley.toolbox.Volley
+    import com.example.projeto_softinsa_app.Helpers.JsonHelper
+    import org.json.JSONObject
 
     class Departamento(private val context: Context, private val editor: SharedPreferences.Editor?) {
 
@@ -20,12 +22,13 @@
         )
 
         fun getDepartamento(callback: GetDepartamentoCallback, id: Int) {
-            val url = "https://softinsa-web-app-carreiras01.onrender.com/departamento/get/$id"
-
-            val request = JsonObjectRequest(Request.Method.GET, url, null,
-                Response.Listener { response ->
-                    if (response.has("data")) {
-                        val dataObject = response.getJSONObject("data")
+            val jsonString = JsonHelper.ReadJSONFromAssets(context, "departamento.json")
+            val response: JSONObject = JSONObject(jsonString)
+            if (response.has("departamentos")) {
+                val jsonArray = response.getJSONArray("departamentos")
+                for (i in 0 until jsonArray.length()) {
+                    val dataObject = jsonArray.getJSONObject(i)
+                    if (id == dataObject.optInt("departamentoId")) {
                             val departamento = Departamento(
                                 deparmentoId = dataObject.optInt("deparmentoId"),
                                 departamentoNome = dataObject.optString("departamentoNome"),
@@ -35,19 +38,13 @@
 
 
                         callback.onSuccess(departamento)
+                        }
+                    }
                     } else {
                         val errorMessage = "Resposta JSON Inválida"
                         callback.onFailure(errorMessage)
                     }
-                },
-                Response.ErrorListener { error ->
-                    error.printStackTrace()
-                    // Handle request error and call the onFailure callback with the error message
-                    val errorMessage = "A obter a filial"
-                    callback.onFailure(errorMessage)
-                })
 
-            requestQueue.add(request)
         }
 
         interface GetDepartamentoCallback {

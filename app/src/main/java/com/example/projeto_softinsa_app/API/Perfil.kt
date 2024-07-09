@@ -10,6 +10,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Des_tudo.imagem_lista_user
 import com.example.projeto_softinsa_app.Des_tudo.imagem_projeto
+import com.example.projeto_softinsa_app.Helpers.FileUtils
 import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import com.google.gson.Gson
 import org.json.JSONException
@@ -93,9 +94,6 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
     fun listUser(callback: GetUserListaCallback) {
         val jsonString = JsonHelper.ReadJSONFromAssets(context, "users.json")
         val obj = JSONObject(jsonString)
-
-       // val url = "https://softinsa-web-app-carreiras01.onrender.com/user/list"
-
                 try {
                     val jsonArray = obj.getJSONArray("users")
                     val ar_img_list_users= ArrayList<imagem_lista_user>()
@@ -106,7 +104,8 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
                         val primeiroNome = item.getString("primeiroNome")
                         val ultimoNome = item.getString("ultimoNome")
                         val numeroFuncionario = item.optInt("numeroFuncionario")
-                        val cargoId = item.getInt("cargoId")
+                        val cargo = item.getJSONObject("cargo")
+                        val cargoId = cargo.getInt("cargoId")
                         val email = item.getString("email")
                         val telemovel = item.getString("telemovel")
                         val dataRegisto = item.getString("dataRegisto")
@@ -133,7 +132,6 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
                         imgItem.atr_Departamento_lista_user(departamentoId)
                         imgItem.atr_Filial_lista_user(filialId)
 
-
                         ar_img_list_users.add(imgItem)
                     }
 
@@ -147,7 +145,13 @@ class Perfil(private val context: Context, private val editor: SharedPreferences
 
     fun getUser(id: Int, callback: GetUserCallback)
     {
-        val jsonString = ReadJSONFromAssets(context, "users.json")
+        var jsonString = ""
+        val file = File(context.filesDir, "users.json")
+        jsonString = if (file.exists()) {
+            FileUtils.readFile(context, "users.json")
+        } else {
+            JsonHelper.ReadJSONFromAssets(context, "users.json")
+        }
         val obj = JSONObject(jsonString)
 
         if (obj.has("users")) {

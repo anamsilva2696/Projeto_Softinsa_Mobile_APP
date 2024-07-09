@@ -2,6 +2,7 @@
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,7 +114,7 @@ class vagaFragment : Fragment() {
 
             }
             2 -> {
-                candidaturaApi.listCandidaturasUser(userId = userId, object : Candidatura.GetCandidaturaCallback {
+                candidaturaApi.listCandidaturasUser(1, object : Candidatura.GetCandidaturaCallback {
                     override fun onSuccess(candidaturas: List<imagem_candidatura>) {
 
                         ada2 = Lvadapador_candidatura(requireContext(), candidaturas)

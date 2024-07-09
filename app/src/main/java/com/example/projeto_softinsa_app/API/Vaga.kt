@@ -87,9 +87,13 @@ class Vaga(private val context: Context, private val editor: SharedPreferences.E
         val response = JSONObject(jsonString)
 
         if (response.has("vagas")) {
-                    val dataObject = response.getJSONObject("data")
+            Log.d("tag2", "aqui")
+
+            val jsonArray = response.getJSONArray("vagas")
                     // Extrair os campos desejados do objeto "data"
-            if (id  == dataObject.optInt("vagaId")) {
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id  == dataObject.optInt("vagaId")) {
                 val vaga = Vaga(
                     vagaId = dataObject.optInt("vagaId"),
                     titulo = dataObject.optString("titulo"),
@@ -105,8 +109,10 @@ class Vaga(private val context: Context, private val editor: SharedPreferences.E
                     departamentoId = dataObject.optInt("departamentoId"),
                 )
                 callback.onSuccess(vaga)
+                }
             }
                 } else {
+                    Log.d("tag2", "error")
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)

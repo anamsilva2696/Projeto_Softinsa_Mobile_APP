@@ -1,7 +1,7 @@
 {
   "users": [
       {
-        "userId": 1,
+        "userId": 2,
         "googleId":1,
         "primeiroNome":"José",
         "ultimoNome":"Almeida",
@@ -13,9 +13,11 @@
         "salario": 1000,
         "ultimoLogin": "2019-12-12",
         "dataContratacao":"2019-12-12",
+        "dataRegisto": "2024-07-03",
         "isPrimeiroLogin":false,
         "isAtivo":true,
         "isColaborador":true,
+        "isCandidato":false,
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {
@@ -28,7 +30,7 @@
       },
       {
 
-        "userId": 2,
+        "userId": 3,
         "googleId":2,
         "primeiroNome":"Joaquim",
         "ultimoNome":"das Fontes",
@@ -40,9 +42,11 @@
         "salario": 2000,
         "ultimoLogin": "2019-12-12",
         "dataContratacao":"2019-12-12",
+        "dataRegisto": "2024-07-04",
         "isPrimeiroLogin":false,
         "isAtivo":true,
         "isColaborador":false,
+        "isCandidato":false,
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {
@@ -56,7 +60,7 @@
       },
       {
 
-        "userId": 3,
+        "userId": 4,
         "googleId":3,
         "primeiroNome":"Maria",
         "ultimoNome":"do Mar",
@@ -68,9 +72,11 @@
         "salario": 3000,
         "ultimoLogin": "2019-12-12",
         "dataContratacao":"2019-12-12",
+        "dataRegisto": "2024-07-03",
         "isPrimeiroLogin":false,
         "isAtivo":true,
         "isColaborador":false,
+        "isCandidato":false,
         "verificationToken":"",
         "recoverToken":"",
         "cargo": {

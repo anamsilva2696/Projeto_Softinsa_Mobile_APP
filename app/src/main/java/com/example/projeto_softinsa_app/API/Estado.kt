@@ -9,7 +9,9 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Des_tudo.imagem_estado
 import com.example.projeto_softinsa_app.Des_tudo.imagem_tipoProjeto
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
+import org.json.JSONObject
 
 class Estado(private val context: Context, private val editor: SharedPreferences.Editor?) {
 
@@ -28,45 +30,36 @@ class Estado(private val context: Context, private val editor: SharedPreferences
 
     fun get_Estado(id: Int, callback: GetEstadoSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/estado/get/$id"
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "estado.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("estados")) {
+            val jsonArray = response.getJSONArray("estados")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("estadoId")) {
+                        // Extrair os campos desejados do objeto "data"
+                        val estado = Estado(
+                            estadoId = dataObject.optInt("estadoId"),
+                            estadoNome = dataObject.optString("estadoNome"),
+                        )
 
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
+                        callback.onSuccess(estado)
+                }
+            }
 
-                    // Extrair os campos desejados do objeto "data"
-                    val estado = Estado(
-                        estadoId = dataObject.optInt("estadoId"),
-                        estadoNome = dataObject.optString("estadoNome"),
-                    )
-
-                    callback.onSuccess(estado)
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do Estado Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
 
     fun list_Estado(callback: GetEstadoCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/estado/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "estado.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("estados")
                     val ar_img_list_Estado = ArrayList<imagem_estado>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -87,14 +80,7 @@ class Estado(private val context: Context, private val editor: SharedPreferences
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     interface GetEstadoCallback {
         fun onSuccess(estado: List<imagem_estado>)

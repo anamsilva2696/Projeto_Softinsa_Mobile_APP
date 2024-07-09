@@ -1,30 +1,36 @@
 {
 "investimentos": [
     {
+      "investimentoId": 1,
       "montante": 1000,
       "descricao": "Investimento em ações",
       "dataRegisto":"2019-01-01",
       "dataAtualizacao":"2021-01-01",
       "dataInvestimento":"2020-01-01",
-      "estadoId":1
+      "estadoId":1,
+      "userId": 1
       
     },
     {
+      "investimentoId": 2,
       "montante": 2000,
       "descricao": "Investimento em ações",
       "dataRegisto":"2019-01-01",
       "dataAtualizacao":"2021-01-01",
       "dataInvestimento":"2020-01-01",
-      "estadoId":1
+      "estadoId":1,
+      "userId": 1
       
     },
     {
+      "investimentoId": 3,
       "montante": 3000,
       "descricao": "Investimento em ações",
       "dataRegisto":"2019-01-01",
       "dataAtualizacao":"2021-01-01",
       "dataInvestimento":"2020-01-01",
-      "estadoId":1
+      "estadoId":1,
+      "userId": 2
       
     }
    

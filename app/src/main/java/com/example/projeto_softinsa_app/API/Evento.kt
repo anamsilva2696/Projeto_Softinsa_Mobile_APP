@@ -8,7 +8,9 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.projeto_softinsa_app.Des_tudo.imagem_estado
 import com.example.projeto_softinsa_app.Des_tudo.imagem_evento
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -34,14 +36,13 @@ class Evento(private val context: Context, private val editor: SharedPreferences
 
     fun getEvento(id: Int, callback: GetEventoSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/evento/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "evento.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("eventos")) {
+            val jsonArray = response.getJSONArray("eventos")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("eventoId")) {
                     // Extrair os campos desejados do objeto "data"
                     val evento = Evento(
                         eventoId = dataObject.optInt("eventoId"),
@@ -56,33 +57,23 @@ class Evento(private val context: Context, private val editor: SharedPreferences
                     )
 
                     callback.onSuccess(evento)
+                    }
+                }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do evento Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
-
+            }
 
     fun listEventos(callback: GetEventoCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/evento/list"
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "evento.json")
+        val response: JSONObject = JSONObject(jsonString)
+        try {
+            val jsonArray = response.getJSONArray("eventos")
+            val ar_img_list_evento = ArrayList<imagem_evento>()
 
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                try {
-                    val jsonArray = response.getJSONArray("data")
-                    val ar_img_list_evento = ArrayList<imagem_evento>()
-
-                    for (i in 0 until jsonArray.length()) {
+            for (i in 0 until jsonArray.length()) {
                         val item = jsonArray.getJSONObject(i)
                         val eventoId = item.getInt("eventoId")
                         val titulo = item.getString("titulo")
@@ -103,7 +94,7 @@ class Evento(private val context: Context, private val editor: SharedPreferences
                         imgItem.atr_dataFim_evento(dataFim)
                         imgItem.atr_estadoId_evento(estadoId)
                         imgItem.atr_userId_evento(userId)
-                        imgItem.atr_notas_evento(notas )
+                        imgItem.atr_notas_evento(notas)
                         ar_img_list_evento.add(imgItem)
 
                     }
@@ -113,15 +104,7 @@ class Evento(private val context: Context, private val editor: SharedPreferences
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
-
+            }
     fun createEvento(titulo: String, descricao: String, tipo: String, dataInicio: String, dataFim: String, estadoId: Int,  userId: Int, notas: String, callback: GetEventoSingleCallback) {
         url = "https://softinsa-web-app-carreiras01.onrender.com/evento/create"
 

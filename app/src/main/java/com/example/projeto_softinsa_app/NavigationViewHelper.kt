@@ -1,6 +1,7 @@
 import android.content.Context
 import android.content.Intent
-import android.view.MenuItem
+import android.content.SharedPreferences
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,18 +9,22 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.projeto_softinsa_app.API.Perfil
 import com.example.projeto_softinsa_app.ListUser.MainListUsers
-import com.example.projeto_softinsa_app.MainPage
-import com.example.projeto_softinsa_app.MainOportunidades
+import com.example.projeto_softinsa_app.MainActivity
+import com.example.projeto_softinsa_app.MainBeneficio
+import com.example.projeto_softinsa_app.MainCalendario
 import com.example.projeto_softinsa_app.MainIdeia
 import com.example.projeto_softinsa_app.MainOferta_Vaga
-import com.example.projeto_softinsa_app.MainBeneficio
-import com.example.projeto_softinsa_app.PerfilActivity
-import com.example.projeto_softinsa_app.MainCalendario
-import com.example.projeto_softinsa_app.MainActivity
+import com.example.projeto_softinsa_app.MainOportunidades
+import com.example.projeto_softinsa_app.MainPage
 import com.example.projeto_softinsa_app.MainReporting
+import com.example.projeto_softinsa_app.PerfilActivity
 import com.example.projeto_softinsa_app.R
-import com.example.projeto_softinsa_app.login.Authorization
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.navigation.NavigationView
+
 
 object NavigationViewHelper {
     fun setupNavigationView(
@@ -39,7 +44,7 @@ object NavigationViewHelper {
         var cargoId: Int
 
 
-
+        var googleSignInClient: GoogleSignInClient
         val user = Perfil(activity, null)
         isColaborador = user.getStoredIsColaborador()
         cargoId = user.getStoredCargoId()
@@ -104,12 +109,41 @@ object NavigationViewHelper {
                     activity.startActivity(intent9)
                 }
                 R.id.nav_logout -> {
-                    val intent6 = Intent(activity, MainActivity::class.java)
-                    //nao deixar voltar atras :3
-                    intent6.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    Toast.makeText(activity, "Login Out", Toast.LENGTH_SHORT).show()
-                    activity.startActivity(intent6)
-                    activity.finish() // Encerra a atividade atual
+
+                    val sharedPreferences: SharedPreferences = activity.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    val isGoogleSignIn = sharedPreferences.getBoolean("isGoogleSignIn", false)
+                    Log.d("isGoogleSignIn", isGoogleSignIn.toString())
+                    if (isGoogleSignIn) {
+                        // Configure Google Sign-In
+                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail()
+                            .build()
+
+                        googleSignInClient = GoogleSignIn.getClient(activity, gso)
+
+
+                        // Call signOut() method
+                        googleSignInClient.signOut()
+                            .addOnCompleteListener(
+                                activity,
+                                OnCompleteListener<Void?> { // Handle the sign-out result
+                                    Log.d("MainActivity", "Signed out successfully")
+                                    editor.clear()
+                                    editor.apply()
+                                    val intent9 = Intent(activity, MainActivity::class.java)
+                                    activity.startActivity(intent9)
+                                })
+                            .addOnFailureListener { e ->
+                                // Handle the error
+                                Log.e("MainActivity", "Sign out failed", e)
+                            }
+                    } else {
+                        editor.clear()
+                        editor.apply()
+                        val intent9 = Intent(activity, MainActivity::class.java)
+                        activity.startActivity(intent9)
+                    }
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)

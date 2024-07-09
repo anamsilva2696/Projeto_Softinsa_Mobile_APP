@@ -1,6 +1,7 @@
 package com.example.projeto_softinsa_app.API
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Helpers.JsonHelper
@@ -22,8 +23,11 @@ class Filial(private val context: Context, private val editor: SharedPreferences
     fun getFilial(callback: GetFilialCallback, id: Int) {
         val jsonString = JsonHelper.ReadJSONFromAssets(context, "filial.json")
         val response: JSONObject = JSONObject(jsonString)
-        if (response.has("filiais")) {
-                    val dataObject = response.getJSONObject("filiais")
+        if (response.has("filial")) {
+            Log.d("id", id.toString())
+                    val jsonArray = response.getJSONArray("filial")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
                     if (id == dataObject.optInt("filialId")) {
                         val filial = Filial(
                             filialId = dataObject.optInt("filialId"),
@@ -35,6 +39,7 @@ class Filial(private val context: Context, private val editor: SharedPreferences
                         )
                         callback.onSuccess(filial)
                     }
+                }
                 } else {
                     val errorMessage = "Resposta JSON Inválida"
                     callback.onFailure(errorMessage)

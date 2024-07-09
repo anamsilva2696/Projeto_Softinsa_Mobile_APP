@@ -9,6 +9,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.negocio_softinsa_mobile_app.Des_tudo.imagem_negocio
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -37,14 +38,13 @@ class Negocio(private val context: Context, private val editor: SharedPreference
 
     fun getNegocio(id: Int, callback: GetNegocioSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/negocio/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "negocio.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("negocios")) {
+            val jsonArray = response.getJSONArray("negocios")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("investimentoId")) {
                     // Extrair os campos desejados do objeto "data"
                     val negocio = Negocio(
                         negocioId = dataObject.optInt("negocioId"),
@@ -60,30 +60,20 @@ class Negocio(private val context: Context, private val editor: SharedPreference
                     )
 
                     callback.onSuccess(negocio)
+                    }
+                }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do negocio Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
-
+            }
 
     fun listNegocios(callback: GetNegocioCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/negocio/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "negocios.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("negocios")
                     val ar_img_list_negocio = ArrayList<imagem_negocio>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -119,14 +109,7 @@ class Negocio(private val context: Context, private val editor: SharedPreference
                     val errorMessage = "Negocios - Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     fun createNegocio(userId: Int, email: String, telemovel: String, orcamento: String, descricao: String, areaNegocioId: Int, callback: CreateNegocioCallback) {
         url = "https://softinsa-web-app-carreiras01.onrender.com/negocio/create"

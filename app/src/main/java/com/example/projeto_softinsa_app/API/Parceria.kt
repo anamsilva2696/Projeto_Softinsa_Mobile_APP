@@ -9,6 +9,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.negocio_softinsa_mobile_app.Des_tudo.imagem_parceria
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -32,14 +33,13 @@ class Parceria(private val context: Context, private val editor: SharedPreferenc
 
     fun getParceria(id: Int, callback: GetParceriaSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/parceria/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "parceria.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("parcerias")) {
+            val jsonArray = response.getJSONArray("parcerias")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("parceriaId")) {
                     // Extrair os campos desejados do objeto "data"
                     val parceria = Parceria(
                         parceriaId = dataObject.optInt("parceriaId"),
@@ -52,30 +52,23 @@ class Parceria(private val context: Context, private val editor: SharedPreferenc
                     )
 
                     callback.onSuccess(parceria)
+                    }
+                }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do parceria Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
+        }
 
-        requestQueue.add(request)
-    }
+
 
 
     fun listParcerias(callback: GetParceriaCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/parceria/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "parcerias.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("parcerias")
                     val ar_img_list_parceria = ArrayList<imagem_parceria>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -105,14 +98,7 @@ class Parceria(private val context: Context, private val editor: SharedPreferenc
                     val errorMessage = "Parcerias - Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     fun createParceria(userId: Int, nomeParceiro: String, email: String, telemovel: String, callback: CreateParceriaCallback) {
         url = "https://softinsa-web-app-carreiras01.onrender.com/parceria/create"

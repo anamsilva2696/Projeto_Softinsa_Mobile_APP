@@ -8,7 +8,9 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.projeto_softinsa_app.Des_tudo.imagem_tipoProjeto
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import org.json.JSONException
+import org.json.JSONObject
 
 class Tipo_Projeto(private val context: Context, private val editor: SharedPreferences.Editor?) {
 
@@ -27,14 +29,13 @@ class Tipo_Projeto(private val context: Context, private val editor: SharedPrefe
 
     fun getTipo_Projeto(id: Int, callback: GetTipo_ProjetoSingleCallback)
     {
-        url = "https://softinsa-web-app-carreiras01.onrender.com/tipo-projeto/get/$id"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
-                // Verificar se a resposta JSON contém o campo "data"
-                if (response.has("data")) {
-                    val dataObject = response.getJSONObject("data")
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "tipos-projeto.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("tipos_projeto")) {
+            val jsonArray = response.getJSONArray("tipos_projeto")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("tipoProjetoId")) {
                     // Extrair os campos desejados do objeto "data"
                     val area_negocio = Tipo_Projeto(
                         tipoProjetoId = dataObject.optInt("tipoProjetoId"),
@@ -42,30 +43,21 @@ class Tipo_Projeto(private val context: Context, private val editor: SharedPrefe
                     )
 
                     callback.onSuccess(area_negocio)
+                    }
+                }
                 } else {
                     // Lidar com a resposta JSON inválida ou ausência do campo "data"
                     val errorMessage = "Resposta JSON inválida. Por favor, tente novamente mais tarde."
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                // Lidar com o erro de requisição e chamar o callback onFailure com a mensagem de erro
-                val errorMessage = "Falha ao obter dados do tipoProjeto Por favor, tente novamente mais tarde."
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
 
     fun listTipo_Projetos(callback: GetTipo_ProjetoCallback) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/tipo-projeto/list"
-
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "tipos-projeto.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonArray = response.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("tipos_projeto")
                     val ar_img_list_tipoProjeto = ArrayList<imagem_tipoProjeto>()
 
                     for (i in 0 until jsonArray.length()) {
@@ -86,14 +78,7 @@ class Tipo_Projeto(private val context: Context, private val editor: SharedPrefe
                     val errorMessage = "Erro ao analisar a resposta do servidor: ${e.message}"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                val errorMessage = "Erro ao obter dados do servidor: ${error.message}"
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
-    }
+            }
 
     interface GetTipo_ProjetoCallback {
         fun onSuccess(tipo_projeto: List<imagem_tipoProjeto>)

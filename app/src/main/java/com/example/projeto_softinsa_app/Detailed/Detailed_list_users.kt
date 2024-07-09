@@ -1,7 +1,6 @@
 package com.example.projeto_softinsa_app.Detailed
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,7 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.android.volley.Request
@@ -18,12 +17,23 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.projeto_softinsa_app.*
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import com.example.projeto_softinsa_app.ListUser.Edit_ListUser
 import com.example.projeto_softinsa_app.ListUser.MainListUsers
+import com.example.projeto_softinsa_app.MainActivity
+import com.example.projeto_softinsa_app.MainBeneficio
+import com.example.projeto_softinsa_app.MainIdeia
+import com.example.projeto_softinsa_app.MainOferta_Vaga
+import com.example.projeto_softinsa_app.MainOportunidades
+import com.example.projeto_softinsa_app.MainPage
+import com.example.projeto_softinsa_app.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import org.json.JSONException
 import org.json.JSONObject
+
 
 data class Filial(
     val filialId: Int,
@@ -52,6 +62,8 @@ class Detailed_list_users : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var requestQueue: RequestQueue
+    private lateinit var googleSignInClient: GoogleSignInClient
+    var context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_list_users)
@@ -200,12 +212,17 @@ class Detailed_list_users : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Clicked profile", Toast.LENGTH_SHORT).show()
                 }
                 R.id.nav_logout ->{
-                    val intent6 = Intent(applicationContext, MainActivity::class.java)
-                    //nao deixar voltar atras :3
-                    intent6.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    Toast.makeText(applicationContext, "Login Out", Toast.LENGTH_SHORT).show()
-                    startActivity(intent6)
-                    finish() // Encerra a atividade atual
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+                    googleSignInClient.signOut()
+                        val intent6 = Intent(applicationContext, MainActivity::class.java)
+                        //nao deixar voltar atras :3
+                        intent6.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        Toast.makeText(applicationContext, "Login Out", Toast.LENGTH_SHORT).show()
+                        startActivity(intent6)
+                        finish() // Encerra a atividade atual
+
                 }
             }
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -233,49 +250,40 @@ class Detailed_list_users : AppCompatActivity() {
     }
 
     fun getFilial(callback: GetFilialCallback, id: Int) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/filial/get/$id"
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "filial.json")
+        val response: JSONObject = JSONObject(jsonString)
+        if (response.has("filial")) {
+            Log.d("id", id.toString())
+            val jsonArray = response.getJSONArray("filial")
+            for (i in 0 until jsonArray.length()) {
+                val dataObject = jsonArray.getJSONObject(i)
+                if (id == dataObject.optInt("filialId")) {
+                    val filial = Filial(
+                        filialId = dataObject.optInt("filialId"),
+                        filialNome = dataObject.optString("filialNome"),
+                        morada = dataObject.optString("morada"),
+                        telemovel = dataObject.optString("telemovel"),
+                        email = dataObject.optString("email")
 
-        val request = JsonObjectRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
-                try {
-                    if (response.has("data")) {
-                        val dataObject = response.getJSONObject("data")
-                        val filial = Filial(
-                            filialId = dataObject.optInt("filialId"),
-                            filialNome = dataObject.optString("filialNome"),
-                            morada = dataObject.optString("morada"),
-                            telemovel = dataObject.optString("telemovel"),
-                            email = dataObject.optString("email")
-                        )
-                        callback.onSuccess(filial)
-                    } else {
-                        val errorMessage = "Invalid JSON response"
-                        callback.onFailure(errorMessage)
-                    }
-                } catch (e: JSONException) {
-                    val errorMessage = "Error parsing JSON response"
-                    callback.onFailure(errorMessage)
+                    )
+                    callback.onSuccess(filial)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                val errorMessage = "Error: " + error.message
-                callback.onFailure(errorMessage)
-            })
-
-        requestQueue.add(request)
+            }
+        } else {
+            val errorMessage = "Resposta JSON Inválida"
+            callback.onFailure(errorMessage)
+        }
     }
 
     fun getDepartamento(callback: GetDepartamentoCallback, id: Int) {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/departamento/get/$id"
-
-        val request = JsonObjectRequest(
-            Request.Method.GET, url, null,
-            Response.Listener { response ->
+        val jsonString = JsonHelper.ReadJSONFromAssets(context, "departamento.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    if (response.has("data")) {
-                        val dataObject = response.getJSONObject("data")
+                    if (response.has("departamentos")) {
+                        val jsonArray = response.getJSONArray("departamentos")
+                        for (i in 0 until jsonArray.length()) {
+                            val dataObject = jsonArray.getJSONObject(i)
+                            if (id == dataObject.optInt("departamentoId")) {
                         val departamento = Departamento(
                             departamentoId = dataObject.optInt("departamentoId"),
                             departamentoNome = dataObject.optString("departamentoNome"),
@@ -287,19 +295,14 @@ class Detailed_list_users : AppCompatActivity() {
                         val errorMessage = "Invalid JSON response"
                         callback.onFailure(errorMessage)
                     }
+                            }
+                        }
                 } catch (e: JSONException) {
                     val errorMessage = "Error parsing JSON response"
                     callback.onFailure(errorMessage)
                 }
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                val errorMessage = "Error: " + error.message
-                callback.onFailure(errorMessage)
-            })
 
-        requestQueue.add(request)
-    }
+            }
 
     fun deleteUser(userId: Int, callback: GetUpdateCallback) {
         url = "https://softinsa-web-app-carreiras01.onrender.com/user/delete"

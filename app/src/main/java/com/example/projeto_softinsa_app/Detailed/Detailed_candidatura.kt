@@ -58,14 +58,18 @@ class Detailed_candidatura : AppCompatActivity() {
         if (selectedCandidatura.userId_img_candidatura != null) {
             user.getUser(selectedCandidatura.userId_img_candidatura!! , object : Perfil.GetUserCallback {
                 override fun onSuccess(user: Perfil.User) {
-                    Log.d("tag", "${user.primeiroNome}")
+                    Log.d("tag2", "${user.telemovel}")
+                    Log.d("tag2", "${user.dataRegisto}")
+
                     email.text = user.email
                     nome.text = user.primeiroNome + " " + user.ultimoNome
                     telefone.text = user.telemovel
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                /*   val dateFormat = SimpleDateFormat("YYYY-MM-DD", Locale.getDefault())
                     val date = dateFormat.parse(user.dataRegisto)
                     val formattedDate = dateFormat.format(date)
-                    data.text = formattedDate
+                    Log.d("tag2", "${formattedDate}")*/
+
+                    data.text = ""
                 }
 
                 override fun onFailure(errorMessage: String) {
@@ -77,14 +81,18 @@ class Detailed_candidatura : AppCompatActivity() {
         }
 
         val vaga = Vaga(this, null)
+        Log.d("tag2", "${selectedCandidatura.vagaId_img_candidatura}")
+
         if (selectedCandidatura.vagaId_img_candidatura != null) {
             vaga.getVaga(selectedCandidatura.vagaId_img_candidatura!! , object : Vaga.GetVagaSingleCallback {
                 override fun onSuccess(vaga: Vaga.Vaga) {
-                    Log.d("tag", "${vaga.titulo}")
+                    Log.d("tag2", "${vaga.titulo}")
                     numero.text = vaga.titulo
                 }
 
                 override fun onFailure(errorMessage: String) {
+                    Log.d("tag2", "${errorMessage}")
+
                     numero.text = "Error: $errorMessage"
                 }
             })

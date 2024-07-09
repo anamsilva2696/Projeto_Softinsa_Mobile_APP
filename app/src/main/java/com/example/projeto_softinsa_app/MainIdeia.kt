@@ -3,6 +3,7 @@ package com.example.projeto_softinsa_app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageButton
 import android.widget.ListView
@@ -12,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.projeto_softinsa_app.Des_tudo.imagem_ideia
 import com.example.projeto_softinsa_app.Detailed.Detailed_ideia
+import com.example.projeto_softinsa_app.Helpers.JsonHelper
 import com.example.projeto_softinsa_app.ListUser.MainListUsers
 import com.example.projeto_softinsa_app.R
 import com.google.android.material.navigation.NavigationView
@@ -79,28 +81,10 @@ class MainIdeia : AppCompatActivity() {
     }
 
     private fun fetchDataFromServer() {
-        val url = "https://softinsa-web-app-carreiras01.onrender.com/ideia/list"
-
-        val client = OkHttpClient()
-
-        val request = Request.Builder()
-            .url(url)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(applicationContext, "Erro ao obter dados do servidor: ${e.message}", Toast.LENGTH_LONG).show()
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val responseBody = response.body?.string()
-
+        val jsonString = JsonHelper.ReadJSONFromAssets(this, "ideia.json")
+        val response: JSONObject = JSONObject(jsonString)
                 try {
-                    val jsonObject = JSONObject(responseBody)
-                    val jsonArray = jsonObject.getJSONArray("data")
+                    val jsonArray = response.getJSONArray("ideias")
 
                     ar_img_list_ideia = ArrayList()
 
@@ -128,11 +112,11 @@ class MainIdeia : AppCompatActivity() {
 
                 } catch (e: JSONException) {
                     runOnUiThread {
+                        Log.d("get the error",  e.message.toString())
                         Toast.makeText(applicationContext, "Erro ao analisar a resposta do servidor: $e", Toast.LENGTH_LONG).show()
                         e.printStackTrace()
                     }
                 }
-            }
-        })
+
     }
 }
